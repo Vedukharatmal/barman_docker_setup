@@ -1,0 +1,103 @@
+# dbContainer.yaml
+services:
+  postgres-src:
+    image: postgres:11
+    container_name: pgsrc
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=company
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata-src:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      # todo move init.sql to Dockerfile
+      - wal_archive:/var/lib/postgresql/new_data/wal_archive
+    command: -c logging_collector=on
+    networks:
+      - pgnet
+
+  barman:
+    build:
+      dockerfile: barman.Dockerfile
+    container_name: barman
+    environment:
+      - BARMAN_BACKUP_METHOD=postgres
+      - BARMAN_POSTGRES_USER=barman
+      - BARMAN_POSTGRES_PASSWORD=barmanpass
+      - BARMAN_POSTGRES_DB=postgres
+      - BARMAN_POSTGRES_HOST=postgres-src
+      - REPLICATION_USER=barman
+      - REPLICATION_PASSWORD=barmanpass
+      - REPLICATION_HOST=postgres-src
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=company
+
+    volumes:
+      - ./barman-data:/var/lib/barman
+      - ./barman/pg.conf:/etc/barman.d/pg.conf
+      # TODO move pg.conf to barman.dockerfile
+      - wal_archive:/incoming-wals
+    depends_on:
+      - postgres-src
+    networks:
+      - pgnet
+
+  ubuntu-postgres11:
+    build:
+      dockerfile: pgd.Dockerfile
+    container_name: pgd
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - shared-folder:/mnt/shared
+      - postgres-data:/var/lib/postgresql/11/main
+    ports:
+      - "2222:22"
+    tty: true
+    networks:
+      - pgnet
+
+volumes:
+  pgdata-src:
+    driver: local
+    driver_opts:
+      type: none
+      device: "V:\\postgresbkp\\pgdata-src"
+      o: bind
+  barman-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: "V:\\postgresbkp\\barman"
+      o: bind
+  wal_archive:
+    driver: local
+    driver_opts:
+      type: none
+      device: "V:\\postgresbkp\\wal_archive"
+      o: bind
+  shared-folder:
+    driver: local
+    driver_opts:
+      type: none
+      device: "V:\\postgresbkp\\shared-folder"
+      o: bind
+  postgres-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: "V:\\postgresbkp\\postgres-data"
+      o: bind
+
+networks:
+  pgnet:

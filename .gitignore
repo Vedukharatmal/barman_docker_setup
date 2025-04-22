@@ -1,0 +1,5 @@
+keys/
+pgdata-src/
+postgres-data/
+barman-data/
+wal_archive/

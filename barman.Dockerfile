@@ -14,6 +14,11 @@ COPY keys/id_rsa.pub /root/.ssh/id_rsa.pub
 RUN chmod 600 /root/.ssh/id_rsa && \
     chmod 644 /root/.ssh/id_rsa.pub
 
+
+#Copy pg.conf file to barman.d folder
+COPY  barman/pg.conf /etc/barman.d/pg.conf
+
+
 # Generate known_hosts file if needed
 # RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 

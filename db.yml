@@ -43,7 +43,7 @@ services:
 
     volumes:
       - ./barman-data:/var/lib/barman
-      - ./barman/pg.conf:/etc/barman.d/pg.conf
+      # - ./barman/pg.conf:/etc/barman.d/pg.conf
       # TODO move pg.conf to barman.dockerfile
       - wal_archive:/incoming-wals
     depends_on:

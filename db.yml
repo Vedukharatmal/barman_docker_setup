@@ -63,6 +63,7 @@ services:
       - postgres-data:/var/lib/postgresql/11/main
     ports:
       - "2222:22"
+      - "5433:5432"
     tty: true
     networks:
       - pgnet

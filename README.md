@@ -17,7 +17,7 @@ barman backup <servername>
 ## View backups
 * Server name is mentioned in barman/pg.conf (/etc/barman.d/pg.conf) file
 ```bash
-barman list-backups <servername>
+barman list-backup <servername>
 ```
 
 ## Restore backup

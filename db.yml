@@ -26,7 +26,7 @@ services:
 
   barman:
     build:
-      dockerfile: barman.Dockerfile
+      dockerfile: barmanUbuntu.Dockerfile
     container_name: barman
     environment:
       - BARMAN_BACKUP_METHOD=postgres

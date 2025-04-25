@@ -20,23 +20,23 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Create required directories
-RUN mkdir -p /etc/barman.d /var/log/barman /var/lib/barman/.ssh
+RUN mkdir -p /etc/barman.d /var/log/barman /root/.ssh
 
 # Copy SSH keys from build context directly into the image
-COPY keys/id_rsa /var/lib/barman/.ssh/id_rsa
-COPY keys/id_rsa.pub /var/lib/barman/.ssh/id_rsa.pub
+COPY keys/id_rsa /root/.ssh/id_rsa
+COPY keys/id_rsa.pub /root/.ssh/id_rsa.pub
 
 # Set proper permissions for SSH files
-RUN chmod 700 /var/lib/barman/.ssh && \
-    chmod 600 /var/lib/barman/.ssh/id_rsa && \
-    chmod 644 /var/lib/barman/.ssh/id_rsa.pub
+RUN chmod 700 /root/.ssh && \
+    chmod 600 /root/.ssh/id_rsa && \
+    chmod 644 /root/.ssh/id_rsa.pub
 
 # Create SSH config file
 RUN echo "Host pg_server\n\
-  IdentityFile /var/lib/barman/.ssh/id_rsa\n\
+  IdentityFile /root/.ssh/id_rsa\n\
   User postgres\n\
-  StrictHostKeyChecking no" > /var/lib/barman/.ssh/config && \
-  chmod 600 /var/lib/barman/.ssh/config
+  StrictHostKeyChecking no" > /root/.ssh/config && \
+  chmod 600 /root/.ssh/config
 
 # Copy configuration files
 COPY barman/barman.conf /etc/barman.conf
@@ -45,6 +45,11 @@ COPY barman/pg.conf /etc/barman.d/
 
 # Set ownership
 RUN chown -R barman:barman /var/lib/barman /etc/barman.d /var/log/barman /etc/barman.conf
+
+#New fixes - .lock file missing fix
+# RUN chown -R barman:barman /var/lib/barman/backups
+RUN mkdir -p /var/lib/barman/.locks
+RUN chown barman:barman /var/lib/barman/.locks
 
 # Create entrypoint script
 # COPY barman/entrypoint.sh /entrypoint.sh
@@ -57,5 +62,6 @@ RUN chown -R barman:barman /var/lib/barman /etc/barman.d /var/log/barman /etc/ba
 # VOLUME ["/var/lib/barman", "/etc/barman.d", "/var/log/barman"]
 
 # ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/bin/supervisord", "-n"]
+# CMD ["/usr/bin/supervisord", "-n"]
 # CMD ["/bin/bash"]
+CMD bash -c "service ssh start && tail -f /dev/null"

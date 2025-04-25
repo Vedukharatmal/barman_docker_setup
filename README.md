@@ -22,11 +22,11 @@ barman list-backup <servername>
 
 ## Restore backup
 ```bash
-barman recover --remote-ssh-command "ssh <destDbUsername>@<destDbIP>" <sourceServername> <backupIdNumber>  <destDatabaseFolderPath> 
+barman recover --remote-ssh-command "ssh -o StrictHostKeyChecking=no <destDbUsername>@<destDbIP>" <sourceServername> <backupIdNumber>  <destDatabaseFolderPath> 
 ```
 Example:
 ```bash
-barman recover --remote-ssh-command "ssh postgres@172.20.0.2" pg 20250409T070911  /var/lib/postgresql/11/main/
+barman recover --remote-ssh-command "ssh -o StrictHostKeyChecking=no  postgres@pgd" pg 20250409T070911  /var/lib/postgresql/11/main/
 ```
 
 ## Steps to perform Incremental backup 

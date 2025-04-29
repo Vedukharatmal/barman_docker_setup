@@ -40,28 +40,33 @@ RUN echo "Host pg_server\n\
 
 # Copy configuration files
 COPY barman/barman.conf /etc/barman.conf
-COPY barman/pg.conf /etc/barman.d/
-# COPY supervisord.conf /etc/supervisor/conf.d/barman.conf
+COPY barman/pg.conf /etc/barman.d/pg.conf
+COPY barman/supervisord.conf /etc/supervisor/conf.d/barman.conf
 
 # Set ownership
 RUN chown -R barman:barman /var/lib/barman /etc/barman.d /var/log/barman /etc/barman.conf
+RUN chmod 700 /var/lib/barman
 
 #New fixes - .lock file missing fix
 # RUN chown -R barman:barman /var/lib/barman/backups
 RUN mkdir -p /var/lib/barman/.locks
 RUN chown barman:barman /var/lib/barman/.locks
+RUN chmod 700 /var/lib/barman/.locks/
+
+# RUN barman receive-wal --create-slot pg
+# RUN barman switch-xlog --force --archive pg
 
 # Create entrypoint script
 # COPY barman/entrypoint.sh /entrypoint.sh
 # RUN chmod +x /entrypoint.sh
 
 # Create cron job for periodic backups
-# RUN echo "0 3 * * * barman /usr/bin/barman backup all >> /var/log/barman/backup.log 2>&1" > /etc/cron.d/barman-backup
-# RUN chmod 0644 /etc/cron.d/barman-backup
+RUN echo "0 3 * * * barman /usr/bin/barman backup all >> /var/log/barman/backup.log 2>&1" > /etc/cron.d/barman-backup
+RUN chmod 0644 /etc/cron.d/barman-backup
 
 # VOLUME ["/var/lib/barman", "/etc/barman.d", "/var/log/barman"]
 
 # ENTRYPOINT ["/entrypoint.sh"]
-# CMD ["/usr/bin/supervisord", "-n"]
+CMD ["/usr/bin/supervisord", "-n"]
 # CMD ["/bin/bash"]
-CMD bash -c "service ssh start && tail -f /dev/null"
+# CMD bash -c "service ssh start && tail -f /dev/null"

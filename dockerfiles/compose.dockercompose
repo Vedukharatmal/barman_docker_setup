@@ -1,12 +1,12 @@
-# dbContainer.yaml
 services:
   postgres-src:
     build:
-      dockerfile: pgsrc.Dockerfile
+      context: ../
+      dockerfile: dockerfiles/pgsrc.Dockerfile
     container_name: pgsrc
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -29,7 +29,8 @@ services:
 
   barman:
     build:
-      dockerfile: barmanUbuntu.Dockerfile
+      context: ../
+      dockerfile: dockerfiles/barmanUbuntu.Dockerfile
     container_name: barman
     environment:
       - BARMAN_BACKUP_METHOD=postgres
@@ -45,7 +46,7 @@ services:
       - POSTGRES_DB=company
 
     volumes:
-      - ./barman-data:/var/lib/barman
+      - ../mounted-folders/barman-data:/var/lib/barman
       # - ./barman/pg.conf:/etc/barman.d/pg.conf
       # TODO move pg.conf to barman.dockerfile
       - wal_archive:/var/lib/barman/backups/incoming/
@@ -56,7 +57,8 @@ services:
 
   ubuntu-postgres11:
     build:
-      dockerfile: pgd.Dockerfile
+      context: ../
+      dockerfile: dockerfiles/pgd.Dockerfile
     container_name: pgd
     environment:
       - POSTGRES_USER=postgres
@@ -76,31 +78,31 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: "V:\\postgresbkp\\pgdata-src"
+      device: "..\\mounted-folders\\pgdata-src"
       o: bind
   barman-data:
     driver: local
     driver_opts:
       type: none
-      device: "V:\\postgresbkp\\barman-data"
+      device: "..\\mounted-folders\\barman-data"
       o: bind
   wal_archive:
     driver: local
     driver_opts:
       type: none
-      device: "V:\\postgresbkp\\wal_archive"
+      device: "..\\mounted-folders\\wal_archive"
       o: bind
   shared-folder:
     driver: local
     driver_opts:
       type: none
-      device: "V:\\postgresbkp\\shared-folder"
+      device: "..\\mounted-folders\\shared-folder"
       o: bind
   postgres-data:
     driver: local
     driver_opts:
       type: none
-      device: "V:\\postgresbkp\\postgres-data"
+      device: "..\\mounted-folders\\pgdata-dst"
       o: bind
 
 networks:

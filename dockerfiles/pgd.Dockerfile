@@ -41,9 +41,9 @@ RUN chmod 700 /var/lib/postgresql/.ssh
 # RUN chmod 600 /var/lib/postgresql/.ssh/authorized_keys
 
 # Copy public key
-COPY keys/id_rsa.pub /var/lib/postgresql/.ssh/authorized_keys
-COPY postgres/postgresql.conf /etc/postgresql/11/main/postgresql.conf 
-COPY postgres/pg_hba.conf /etc/postgresql/11/main/pg_hba.conf
+COPY conf/keys/id_rsa.pub /var/lib/postgresql/.ssh/authorized_keys
+COPY conf/pgd/postgresql.conf /etc/postgresql/11/main/postgresql.conf 
+COPY conf/pgd/pg_hba.conf /etc/postgresql/11/main/pg_hba.conf
 
 # Set correct permissions
 RUN chmod 600 /var/lib/postgresql/.ssh/authorized_keys && \

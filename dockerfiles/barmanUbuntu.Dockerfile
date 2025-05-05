@@ -23,8 +23,8 @@ RUN apt-get update && apt-get install -y \
 RUN mkdir -p /etc/barman.d /var/log/barman /root/.ssh
 
 # Copy SSH keys from build context directly into the image
-COPY keys/id_rsa /root/.ssh/id_rsa
-COPY keys/id_rsa.pub /root/.ssh/id_rsa.pub
+COPY conf/keys/id_rsa /root/.ssh/id_rsa
+COPY conf/keys/id_rsa.pub /root/.ssh/id_rsa.pub
 
 # Set proper permissions for SSH files
 RUN chmod 700 /root/.ssh && \
@@ -39,9 +39,9 @@ RUN echo "Host pg_server\n\
   chmod 600 /root/.ssh/config
 
 # Copy configuration files
-COPY barman/barman.conf /etc/barman.conf
-COPY barman/pg.conf /etc/barman.d/pg.conf
-COPY barman/supervisord.conf /etc/supervisor/conf.d/barman.conf
+COPY conf/barman/barman.conf /etc/barman.conf
+COPY conf/barman/pg.conf /etc/barman.d/pg.conf
+COPY conf/barman/supervisord.conf /etc/supervisor/conf.d/barman.conf
 
 # Set ownership
 RUN chown -R barman:barman /var/lib/barman /etc/barman.d /var/log/barman /etc/barman.conf
@@ -68,5 +68,5 @@ RUN chmod 0644 /etc/cron.d/barman-backup
 
 # ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/supervisord", "-n"]
-# CMD ["/bin/bash"]
+# CMD ["/usr/bin/bash"]
 # CMD bash -c "service ssh start && tail -f /dev/null"

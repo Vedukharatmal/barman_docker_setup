@@ -1,5 +1,6 @@
-keys/
-pgdata-src/
-postgres-data/
-barman-data/
-wal_archive/
+conf/keys/
+mounted-folders/
+# pgdata-src/
+# postgres-data/
+# barman-data/
+# wal_archive/

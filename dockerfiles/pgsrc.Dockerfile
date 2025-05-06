@@ -1,6 +1,9 @@
 FROM ubuntu:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=secret
+ENV POSTGRES_DB=company
 
 # Install PostgreSQL 11
 RUN apt-get update && \
@@ -26,14 +29,12 @@ COPY conf/pgsrc/pg_hba.conf /etc/postgresql/11/main/pg_hba.conf
 COPY conf/pgsrc/pg_ctl.conf /etc/postgresql/11/main/pg_ctl.conf
 COPY conf/pgsrc/pg_ident.conf /etc/postgresql/11/main/pg_ident.conf
 
-# ENV POSTGRES_USER=postgres
-# ENV POSTGRES_PASSWORD=secret
-# ENV POSTGRES_DB=company
 
 # Expose PostgreSQL port
 EXPOSE 5432
 # EXPOSE 22
 
 # Keep container running
-CMD bash -c "service postgresql start && sleep 5 && createdb -U postgres company && psql -U postgres -h localhost -d company -f /init.sql && tail -f /dev/null"
+# CMD bash -c "service postgresql start && sleep 5 && createdb -U postgres company && psql -U postgres -h localhost -d company -f /init.sql && tail -f /dev/null"
+CMD bash -c "service postgresql start && sleep 5 && psql -U postgres -h localhost -f /init.sql && tail -f /dev/null"
 # CMD ["sh", "-c", "service postgresql start && tail -f /dev/null"]

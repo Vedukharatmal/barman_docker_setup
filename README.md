@@ -52,4 +52,4 @@ barman backup --reuse=link pg
 ## TODOS
 * move all environment variables to dockerfile
 * change docker files and docker compose files with new folder names - done
-* remove supervisord as entrypoint in barman container
+* remove supervisord as entrypoint in barman container - done

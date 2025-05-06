@@ -18,6 +18,9 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=secret
+
 # Configure SSH
 RUN mkdir /var/run/sshd
 RUN echo "postgres:123456" | chpasswd

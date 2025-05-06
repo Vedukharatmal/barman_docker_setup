@@ -1,5 +1,5 @@
 services:
-  postgres-src:
+  pgsrc:
     build:
       context: ../
       dockerfile: dockerfiles/pgsrc.Dockerfile
@@ -10,10 +10,10 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=secret
-      - POSTGRES_DB=company
+    # environment:
+    #   - POSTGRES_USER=postgres
+    #   - POSTGRES_PASSWORD=secret
+    #   - POSTGRES_DB=company
     ports:
       - "5432:5432"
     volumes:
@@ -30,20 +30,20 @@ services:
   barman:
     build:
       context: ../
-      dockerfile: dockerfiles/barmanUbuntu.Dockerfile
+      dockerfile: dockerfiles/barman.Dockerfile
     container_name: barman
-    environment:
-      - BARMAN_BACKUP_METHOD=postgres
-      - BARMAN_POSTGRES_USER=barman
-      - BARMAN_POSTGRES_PASSWORD=barmanpass
-      - BARMAN_POSTGRES_DB=postgres
-      - BARMAN_POSTGRES_HOST=pgsrc
-      - REPLICATION_USER=barman
-      - REPLICATION_PASSWORD=barmanpass
-      - REPLICATION_HOST=pgsrc
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=secret
-      - POSTGRES_DB=company
+    # environment:
+    #   - BARMAN_BACKUP_METHOD=postgres
+    #   - BARMAN_POSTGRES_USER=barman
+    #   - BARMAN_POSTGRES_PASSWORD=barmanpass
+    #   - BARMAN_POSTGRES_DB=postgres
+    #   - BARMAN_POSTGRES_HOST=pgsrc
+    #   - REPLICATION_USER=barman
+    #   - REPLICATION_PASSWORD=barmanpass
+    #   - REPLICATION_HOST=pgsrc
+    #   - POSTGRES_USER=postgres
+    #   - POSTGRES_PASSWORD=secret
+    #   - POSTGRES_DB=company
 
     volumes:
       - ../mounted-folders/barman-data:/var/lib/barman
@@ -51,18 +51,18 @@ services:
       # TODO move pg.conf to barman.dockerfile
       - wal_archive:/var/lib/barman/backups/incoming/
     depends_on:
-      - postgres-src
+      - pgsrc
     networks:
       - pgnet
 
-  ubuntu-postgres11:
+  pgd:
     build:
       context: ../
       dockerfile: dockerfiles/pgd.Dockerfile
     container_name: pgd
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=secret
+    # environment:
+    #   - POSTGRES_USER=postgres
+    #   - POSTGRES_PASSWORD=secret
     volumes:
       - shared-folder:/mnt/shared
       - postgres-data:/var/lib/postgresql/11/main

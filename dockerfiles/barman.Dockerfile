@@ -8,6 +8,20 @@ RUN apt-get update && apt-get install -y wget gnupg lsb-release
 RUN sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 
+# Environment variables for barman
+# ENV BARMAN_BACKUP_METHOD=postgres
+# ENV BARMAN_BACKUP_METHOD=postgres
+# ENV BARMAN_POSTGRES_PASSWORD=barmanpass
+# ENV BARMAN_POSTGRES_USER=barman
+# ENV BARMAN_POSTGRES_DB=postgres
+# ENV BARMAN_POSTGRES_HOST=pgsrc
+# ENV REPLICATION_USER=barman
+# ENV REPLICATION_PASSWORD=barmanpass
+# ENV REPLICATION_HOST=pgsrc
+# ENV POSTGRES_USER=postgres
+# ENV POSTGRES_PASSWORD=secret
+# ENV POSTGRES_DB=company
+
 # Install Barman and required packages
 RUN apt-get update && apt-get install -y \
     barman \
@@ -41,7 +55,7 @@ RUN echo "Host pg_server\n\
 # Copy configuration files
 COPY conf/barman/barman.conf /etc/barman.conf
 COPY conf/barman/pg.conf /etc/barman.d/pg.conf
-COPY conf/barman/supervisord.conf /etc/supervisor/conf.d/barman.conf
+# COPY conf/barman/supervisord.conf /etc/supervisor/conf.d/barman.conf
 
 # Set ownership
 RUN chown -R barman:barman /var/lib/barman /etc/barman.d /var/log/barman /etc/barman.conf
@@ -61,12 +75,12 @@ RUN chmod 700 /var/lib/barman/.locks/
 # RUN chmod +x /entrypoint.sh
 
 # Create cron job for periodic backups
-RUN echo "0 3 * * * barman /usr/bin/barman backup all >> /var/log/barman/backup.log 2>&1" > /etc/cron.d/barman-backup
-RUN chmod 0644 /etc/cron.d/barman-backup
+# RUN echo "0 3 * * * barman /usr/bin/barman backup all >> /var/log/barman/backup.log 2>&1" > /etc/cron.d/barman-backup
+# RUN chmod 0644 /etc/cron.d/barman-backup
 
 # VOLUME ["/var/lib/barman", "/etc/barman.d", "/var/log/barman"]
 
 # ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/bin/supervisord", "-n"]
+# CMD ["/usr/bin/supervisord", "-n"]
 # CMD ["/usr/bin/bash"]
-# CMD bash -c "service ssh start && tail -f /dev/null"
+CMD bash -c "service ssh start && tail -f /dev/null"

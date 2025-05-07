@@ -1,6 +1,7 @@
 -- SET password for postgres user
 ALTER USER postgres WITH PASSWORD 'secret';
 
+--Create user barman with replication privilages
 CREATE ROLE barman WITH SUPERUSER LOGIN REPLICATION PASSWORD 'barmanpass';
 
 -- CREATE DATABASE COMPANY
@@ -13,11 +14,10 @@ CREATE TABLE employees (
     email VARCHAR(100)
 );
 
+-- Insert Values
 INSERT INTO employees (name, department, age, email) VALUES
 ('Alice', 'HR', 30, 'alice@example.com'),
 ('Bob', 'Engineering', 28, 'bob@example.com'),
 ('Charlie', 'Marketing', 32, 'charlie@example.com'),
 ('Diana', 'Sales', 27, 'diana@example.com'),
 ('Eve', 'IT', 35, 'eve@example.com');
-
--- RELOAD DATABASE CONFIGURATION

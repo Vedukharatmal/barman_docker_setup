@@ -1,4 +1,4 @@
-barman postgresql docker setup
+BARMAN POSTGRESQL DOCKER SETUP
 
 ## Steps to perform full backup 
 * access barman container

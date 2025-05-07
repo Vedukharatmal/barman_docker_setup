@@ -26,8 +26,8 @@ COPY conf/pgsrc/init.sql /init.sql
 
 COPY conf/pgsrc/postgresql.conf /etc/postgresql/11/main/postgresql.conf 
 COPY conf/pgsrc/pg_hba.conf /etc/postgresql/11/main/pg_hba.conf
-COPY conf/pgsrc/pg_ctl.conf /etc/postgresql/11/main/pg_ctl.conf
-COPY conf/pgsrc/pg_ident.conf /etc/postgresql/11/main/pg_ident.conf
+# COPY conf/pgsrc/pg_ctl.conf /etc/postgresql/11/main/pg_ctl.conf
+# COPY conf/pgsrc/pg_ident.conf /etc/postgresql/11/main/pg_ident.conf
 
 
 # Expose PostgreSQL port
